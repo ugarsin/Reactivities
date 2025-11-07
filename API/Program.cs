@@ -12,7 +12,10 @@ builder.Services.AddMediatR(options =>
 {
     options.RegisterServicesFromAssemblyContaining<GetActivityList.Handler>();
 });
-builder.Services.AddAutoMapper(typeof(MappingProfiles));
+
+builder.Services.AddAutoMapper(cfg => { }, typeof(MappingProfiles).Assembly);
+
+//builder.Services.AddAutoMapper(typeof(MappingProfiles));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
