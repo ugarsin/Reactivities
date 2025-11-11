@@ -2,24 +2,10 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": ".NET Core Launch (web)",
-      "type": "coreclr",
+      "name": "C# Reactivities API Debug",
+      "type": "dotnet",
       "request": "launch",
-      "preLaunchTask": "build",
-      "program": "${workspaceFolder}/API/bin/Debug/net8.0/API.dll",
-      "args": [],
-      "cwd": "${workspaceFolder}/API",
-      "stopAtEntry": false,
-      "serverReadyAction": {
-        "action": "openExternally",
-        "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
-      },
-      "env": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "sourceFileMap": {
-        "/Views": "${workspaceFolder}/Views"
-      }
+      "projectPath": "${workspaceFolder}/API/API.csproj"
     }
   ]
 }
