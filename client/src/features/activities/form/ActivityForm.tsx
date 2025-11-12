@@ -19,7 +19,6 @@ export default function ActivityForm({
     console.log(data);
   }
 
-
   return (
     <Paper sx={{borderRadius: 3, padding: 3}}>
       <Typography variant="h5" gutterBottom color="primary">Create activity</Typography>
