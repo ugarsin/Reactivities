@@ -1,28 +1,18 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import type { Activity } from "../../lib/types/index.d"
 import { Box, Container } from "@mui/material";
 import NavBar from "./NavBar";
 import CssBaseline from '@mui/material/CssBaseline';
 import ActivityDashboard from "../../features/activities/dashboard/ActivityDashboard";
+import { useActivities } from "../../lib/hooks/useActivities";
 
 export default function App() {
-  // const title = "Reactivities";
-  const [activities, setActivities] = useState<Activity[]>([]);
   const [selectedActivity, setSelectedActivity] = useState<Activity | undefined>(undefined);
   const [editMode, setEditMode] = useState(false);
-
-  useEffect(() => {
-    fetch("https://localhost:5001/api/activities")
-      .then(response => response.json())
-      .then(data => setActivities(data));
-
-    // clean up
-    return () => {
-      setActivities([]);
-    };
-  }, []);
+  const {activities} = useActivities();
 
   const handleSelectActivity = (id: string) => {
+    if (!activities) return;
     setSelectedActivity(activities.find(x => x.id === id));
   };
 
