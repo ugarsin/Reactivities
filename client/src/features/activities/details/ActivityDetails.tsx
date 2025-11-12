@@ -4,11 +4,14 @@ import type { Activity } from "../../../lib/types";
 type Props = {
   activity: Activity;
   cancelSelectActivity: () => void;
+  openForm: (id: string) => void;
+  closeForm: () => void;
 }
 
 export default function ActivityDetails({
     activity,
-    cancelSelectActivity
+    cancelSelectActivity,
+    openForm,
   }: Props) {
   return (
     <Card sx={{borderRadius: 3}}>
@@ -22,8 +25,11 @@ export default function ActivityDetails({
         <Typography variant="body1">{activity.description}</Typography>
       </CardContent>
       <CardActions>
-        <Button color="primary">Edit</Button>
-        <Button color="inherit" onClick={cancelSelectActivity}>Cancel</Button>
+        <Button 
+          onClick={() => openForm(activity.id)} 
+          color="primary"
+        >Edit</Button>
+        <Button onClick={cancelSelectActivity} color="inherit">Cancel</Button>
       </CardActions>
     </Card>
   )

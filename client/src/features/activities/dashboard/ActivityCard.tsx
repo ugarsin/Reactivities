@@ -20,7 +20,11 @@ export default function ActivityCard({
       </CardContent>
       <CardActions sx={{display: "flex", justifyContent: "space-between", paddingBottom: 2}}>
         <Chip label={activity.category} variant="outlined" />
-        <Button onClick={() => selectActivity(activity.id)} size="medium" variant="contained">View</Button>
+        <Button 
+          onClick={() => selectActivity(activity.id)} 
+          size="medium" 
+          variant="contained"
+        >View</Button>
       </CardActions>  
     </Card>
   )
