@@ -29,8 +29,8 @@ export default function ActivityCard({
             variant="contained"
           >View</Button>
           <Button 
-            onClick={() => deleteActivity.mutate(activity.id)}
-            disabled={deleteActivity.isPending}
+            onClick={() => deleteActivity?.mutate(activity.id)}
+            disabled={deleteActivity?.isPending}
             size="medium" 
             variant="contained"
             sx={{backgroundColor: "red"}}

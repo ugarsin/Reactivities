@@ -38,7 +38,7 @@ export const useActivities = () => {
   })
 
   const deleteActivity = useMutation({
-    mutationFn: async (id: string) => {
+    mutationFn: async (id: string) => { 
       await agent.delete(`/activities/${id}`);
     },
     onSuccess: async () => {
@@ -52,6 +52,7 @@ export const useActivities = () => {
     activities,
     isPending,
     updateActivity,
-    createActivity
+    createActivity,
+    deleteActivity
   }
 }
