@@ -1,17 +1,18 @@
-import { Grid as Grid2 } from '@mui/material';
+import { Container, Grid } from '@mui/material';
 import ActivityList from './ActivityList';
+import ActivityFilters from './ActivityFilters';
 
 export default function ActivityDashboard() {
   return (
-    <>
-      <Grid2 container spacing={3}>
-        <Grid2 size={7}>
+    <Container maxWidth="lg" sx={{mt: 3}}>
+      <Grid container spacing={3}>
+        <Grid size={{xs: 12, md: 7}}>
           <ActivityList />
-        </Grid2>
-        <Grid2 size={5}>
-          Activity filters go here
-        </Grid2>
-      </Grid2>
-    </>
+        </Grid>
+        <Grid size={{xs: 12, md: 5}}>
+          <ActivityFilters />
+        </Grid>
+      </Grid>
+    </Container>
   );
 }
