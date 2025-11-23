@@ -1,6 +1,7 @@
 import { Card, Badge, CardMedia, Box, Typography, Button } from "@mui/material";
 import { Link } from "react-router";
 import type { Activity } from "../../../lib/types";
+import { formatDate } from "../../../lib/util/util"
 
 type Props = {
   activity: Activity;
@@ -47,7 +48,7 @@ export default function ActivityDetailsHeader({activity}: Props) {
             {/* Text Section */}
             <Box>
                 <Typography variant="h4" sx={{ fontWeight: 'bold' }}>{activity.title}</Typography>
-                <Typography variant="subtitle1">{activity.date}</Typography>
+                <Typography variant="subtitle1">{formatDate(activity.date)}</Typography>
                 <Typography variant="subtitle2">
                     Hosted by <Link to={`/profiles/username`} style={{ color: 'white', fontWeight: 'bold' }}>Bob</Link>
                 </Typography>
