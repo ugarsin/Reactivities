@@ -1,4 +1,5 @@
 ﻿using Application.Activities.Commands;
+using Application.Activities.DTOs;
 using Application.Activities.Queries;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -14,28 +15,27 @@ public class ActivitiesController : BaseApiController
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Domain.Activity?>> GetAvtivityById(string id)
+    public async Task<ActionResult<Domain.Activity>> GetActivityDetail(string id)
     {
-        return await Mediator.Send(new GetActivityDetails.Query { Id = id });
+        throw new Exception("Server test error");
+        return HandleResult(await Mediator.Send(new GetActivityDetails.Query { Id = id }));
     }
 
     [HttpPost]
-    public async Task<ActionResult<string>> CreateActivity(Domain.Activity activity)
+    public async Task<ActionResult<string>> CreateActivity(CreateActivityDto activityDto)
     {
-        return await Mediator.Send(new CreateActivity.Command { Activity = activity }); 
+        return HandleResult(await Mediator.Send(new CreateActivity.Command { ActivityDto = activityDto }));
     }
 
     [HttpPut]
     public async Task<ActionResult> EditActivity(Domain.Activity activity)
     {
-        await Mediator.Send(new EditActivity.Command { Activity = activity });
-        return NoContent();
+        return HandleResult(await Mediator.Send(new EditActivity.Command { Activity = activity }));
     }
 
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteActivity(string id)
     {
-        await Mediator.Send(new DeleteActivity.Command { Id = id });
-        return Ok();
+        return HandleResult(await Mediator.Send(new DeleteActivity.Command { Id = id }));
     }
 }
