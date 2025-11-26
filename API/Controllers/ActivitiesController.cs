@@ -17,7 +17,6 @@ public class ActivitiesController : BaseApiController
     [HttpGet("{id}")]
     public async Task<ActionResult<Domain.Activity>> GetActivityDetail(string id)
     {
-        throw new Exception("Server test error");
         return HandleResult(await Mediator.Send(new GetActivityDetails.Query { Id = id }));
     }
 
@@ -28,9 +27,9 @@ public class ActivitiesController : BaseApiController
     }
 
     [HttpPut]
-    public async Task<ActionResult> EditActivity(Domain.Activity activity)
+    public async Task<ActionResult> EditActivity(EditActivityDto activity)
     {
-        return HandleResult(await Mediator.Send(new EditActivity.Command { Activity = activity }));
+        return HandleResult(await Mediator.Send(new EditActivity.Command { ActivityDto = activity }));
     }
 
     [HttpDelete("{id}")]

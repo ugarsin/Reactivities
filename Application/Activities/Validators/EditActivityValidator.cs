@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace Application.Activities.Validators
 {
-    public class CreateActivityValidator 
-        : 
-        BaseActivityValidator<CreateActivity.Command, CreateActivityDto>
+    public class EditActivityValidator : BaseActivityValidator<EditActivity.Command, EditActivityDto>
     {
-        public CreateActivityValidator() : base(x => x.ActivityDto)
+        public EditActivityValidator() : base(x => x.ActivityDto)
         {
-            
+            RuleFor(x => x.ActivityDto)
+                .NotEmpty().WithMessage("Id is required")
+                ;
         }
     }
 }

@@ -9,6 +9,7 @@ namespace Application.Core
         {
             CreateMap<Domain.Activity, Domain.Activity>();
             CreateMap<CreateActivityDto, Domain.Activity>();
+            CreateMap<EditActivityDto, Domain.Activity>();
         }
     }
 }
