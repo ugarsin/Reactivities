@@ -12,6 +12,8 @@ import { RouterProvider } from 'react-router';
 import { router } from './app/router/Routes.tsx';
 import { store, StoreContext } from './features/stores/store.ts';
 import { ToastContainer } from 'react-toastify';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';   // ✅ ADD THIS
 
 const queryClient = new QueryClient();
 
@@ -21,7 +23,9 @@ createRoot(document.getElementById('root')!).render(
       <QueryClientProvider client={queryClient}>
         <ReactQueryDevtools />
         <ToastContainer position="bottom-right" hideProgressBar theme="colored" />
-        <RouterProvider router={router} />
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <RouterProvider router={router} />
+        </LocalizationProvider>
       </QueryClientProvider>
     </StoreContext.Provider>
   </StrictMode>

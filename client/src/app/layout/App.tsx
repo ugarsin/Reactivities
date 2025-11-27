@@ -8,7 +8,7 @@ export default function App() {
   const location = useLocation();
 
   return (
-    <Box sx={{ bgcolor: "#eeeeee" }}>
+        <Box sx={{ bgcolor: "#eeeeee" }}>
       <CssBaseline></CssBaseline>
       {
         location.pathname === "/"
