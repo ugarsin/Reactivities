@@ -2,7 +2,7 @@ import { Box, Button, Paper, Typography } from "@mui/material";
 import { useActivities } from "../../../lib/hooks/useActivities";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { activitySchema, type ActivitySchema } from "../../../lib/schemas/activitySchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import TextInput from "../../../app/shared/components/TextInput";
@@ -10,8 +10,10 @@ import SelectInput from "../../../app/shared/components/SelectInput";
 import { categoryOptions } from "./categoryOptions";
 import DateTimeInput from "../../../app/shared/components/DateTimeInput";
 import LocationInput from "../../../app/shared/components/LocationInput";
+import dayjs from "dayjs";
 
 export default function ActivityForm() {
+  const navigate = useNavigate();
   const { id } = useParams();
   const { updateActivity, createActivity, activity, isLoadingActivity } = useActivities(id);
   const { control, reset, handleSubmit } = useForm<ActivitySchema>(
@@ -25,7 +27,7 @@ export default function ActivityForm() {
         date: "",
         location: {
           venue: "",
-          city: undefined,
+          city: "",
           latitude: 0,
           longitude: 0
         }
@@ -35,26 +37,42 @@ export default function ActivityForm() {
 
   useEffect(() => {
     if (activity) {
-      // return reset(activity);
       reset({
         ...activity,
-        date: activity.date ? activity.date.split("T")[0] : "",
+        date: activity.date ? dayjs(activity.date).format("YYYY-MM-DDTHH:mm") : "",
         location: {
           venue: activity.venue,
           latitude: activity.latitude,
           longitude: activity.longitude,
-          city: undefined
+          city: activity.city
         },
       });
-      // reset({
-      //   ...activity,
-      //   date: activity.date ? activity.date.split("T")[0] : ""
-      // });
     }
   }, [activity, reset]);
 
   const onSubmit = (data: ActivitySchema) => {
-    console.log(data)
+    const {location, ...rest} = data;
+    const flattenedData = {...rest, ...location};
+    try {
+      if (activity) {
+        updateActivity.mutate(
+          {...activity, ...flattenedData},
+          {
+            onSuccess: () => navigate(`/activities/${activity.id}`)
+          }
+        );
+      } else {
+        console.log(flattenedData);
+        createActivity.mutate(
+          flattenedData,
+          {
+            onSuccess: (id) => navigate(`/activities/${id}`)
+          }
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   if (isLoadingActivity) {
@@ -79,17 +97,19 @@ export default function ActivityForm() {
           rows={3}
           control={control}
         />
-        <SelectInput
-          name="category"
-          label="Category"
-          control={control}
-          items={categoryOptions}
-        />
-        <DateTimeInput
-          name="date"
-          label="Date"
-          control={control}
-        />
+        <Box display="flex" gap={3}>
+          <SelectInput
+            name="category"
+            label="Category"
+            control={control}
+            items={categoryOptions}
+          />
+          <DateTimeInput
+            name="date"
+            label="Date"
+            control={control}
+          />
+        </Box>
         <LocationInput
           control={control}
           label="Enter the location"

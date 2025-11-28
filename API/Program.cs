@@ -52,6 +52,13 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    //app.Use((context, next) =>
+    //{
+    //    context.Response.Headers["Cache-Control"] = "no-store, no-cache, must-revalidate";
+    //    context.Response.Headers["Pragma"] = "no-cache";
+    //    context.Response.Headers["Expires"] = "0";
+    //    return next();
+    //});
 }
 
 app.MapControllers();

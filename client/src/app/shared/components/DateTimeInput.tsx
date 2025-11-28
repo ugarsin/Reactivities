@@ -11,7 +11,6 @@ export default function DateTimeInput<TForm extends FieldValues>(
   props: DateTimeInputProps<TForm>
 ) {
   const { name, control, rules, label, ...rest } = props;
-
   const { field, fieldState } = useController({
     name,
     control,
@@ -22,8 +21,8 @@ export default function DateTimeInput<TForm extends FieldValues>(
     <DateTimePicker
       {...rest}
       label={label}
-      value={field.value ? dayjs(field.value) : null}
-      onChange={(value) => field.onChange(value?.toISOString() ?? "")}
+      value={dayjs(field.value)}
+      onChange={(value) => field.onChange(value?.format("YYYY-MM-DDTHH:mm"))}
       slotProps={{
         textField: {
           fullWidth: true,

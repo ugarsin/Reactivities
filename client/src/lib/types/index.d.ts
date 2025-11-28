@@ -1,3 +1,5 @@
+export type ActivityCreate = Omit<Activity, "id" | "isCancelled">;
+
 export type Activity = {
   id: string;
   title: string;
