@@ -44,7 +44,9 @@ export const useActivities = (id?: string) => {
       return response.data; // this is the new id
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["activities"] });
+      await queryClient.invalidateQueries({ 
+        queryKey: ["activities"] 
+      });
     }
   });
 

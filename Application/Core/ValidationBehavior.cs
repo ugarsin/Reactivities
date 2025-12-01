@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Application.Core
 {
-    public class ValidationBehavior<TRequest, TResponse>(IValidator<TRequest> validator = null)
+    public class ValidationBehavior<TRequest, TResponse>(IValidator<TRequest> validator = null!)
         : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
     {
         public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
