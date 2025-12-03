@@ -8,12 +8,12 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 
 export default function RegisterForm() {
   const { registerUser } = useAccount();
-  const { 
-    control, 
-    handleSubmit, 
-    formState: {isValid} 
+  const {
+    control,
+    handleSubmit,
+    formState: { isValid }
   } = useForm<RegisterSchema>({
-    mode: "onTouched", 
+    mode: "onTouched",
     resolver: zodResolver(registerSchema),
     defaultValues: {
       displayName: "",
@@ -26,35 +26,35 @@ export default function RegisterForm() {
     await registerUser.mutateAsync(data);
   }
   return (
-    <Paper 
-      component="form" 
+    <Paper
+      component="form"
       onSubmit={handleSubmit(onSubmit)}
       sx={{
-        display: "flex", 
-        flexDirection: "column", 
-        p: 3, 
-        gap: 3, 
-        maxWidth: "md", 
-        mx: "auto", 
+        display: "flex",
+        flexDirection: "column",
+        p: 3,
+        gap: 3,
+        maxWidth: "md",
+        mx: "auto",
         borderRadius: 3
       }}
     >
-      <Box 
-        display="flex" 
-        alignItems="center" 
-        justifyContent="center" 
-        gap={3} 
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        gap={3}
         color="secondary.main"
       >
-        <PersonAddIcon fontSize="large"></PersonAddIcon>  
+        <PersonAddIcon fontSize="large"></PersonAddIcon>
         <Typography variant="h4">Register</Typography>
       </Box>
       <TextInput autoComplete="off" label="Name" control={control} name="displayName" />
       <TextInput autoComplete="off" label="Email" control={control} name="email" />
       <TextInput autoComplete="off" label="Password" type="password" control={control} name="password" />
       <TextInput autoComplete="off" label="Confirm password" type="password" control={control} name="confirmPassword" />
-      <Button 
-        type="submit" 
+      <Button
+        type="submit"
         disabled={!isValid}
         variant="contained"
         size="large"

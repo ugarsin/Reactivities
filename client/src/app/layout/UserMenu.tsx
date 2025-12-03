@@ -17,8 +17,8 @@ export default function UserMenu() {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const logOut = () => {
-    logoutUser.mutate();
+  const logOut = async () => {
+    await logoutUser.mutateAsync();
   };
 
   return (
@@ -70,11 +70,11 @@ export default function UserMenu() {
               }}
             >
               <MenuItem onClick={() => {
-                navigate("/account/login");
+                navigate("/login");
                 handleClose();
               }}>Login</MenuItem>
               <MenuItem onClick={() => {
-                navigate("/account/register");
+                navigate("/register");
                 handleClose();
               }}>Register</MenuItem>
             </Menu>

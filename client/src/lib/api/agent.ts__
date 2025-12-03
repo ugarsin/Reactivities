@@ -1,0 +1,79 @@
+import axios from "axios";
+import { store } from "../../features/stores/store";
+import { toast } from "react-toastify";
+import { router } from "../../app/router/Routes";
+
+const agent = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+  withCredentials: true
+});
+
+agent.interceptors.request.use(config => {
+  store.uiStore.isBusy();
+  return config;
+})
+
+agent.interceptors.response.use(
+  async response => {
+    store.uiStore.isIdle();
+    return response;
+  },
+  async error => {
+    store.uiStore.isIdle();
+    // console.log("axios error:" + error);
+    const { status, data } = error.response;
+    switch (status) {
+      case 400:
+        if (data.errors) {
+          const modalStateErrors = [];
+          for (const key in data.errors) {
+            if (data.errors[key]) {
+              modalStateErrors.push(data.errors[key]);
+            }
+          }
+          modalStateErrors.flat().forEach((err: string) => toast.error(err));
+          return Promise.reject(modalStateErrors.flat());
+        } else {
+          toast.error(data);
+        }
+        break;
+      // case 400: {
+      //   const errors: string[] = [];
+
+      //   if (data?.errors) {
+      //     for (const key in data.errors) {
+      //       errors.push(...data.errors[key]);
+      //     }
+      //   } else if (typeof data === "string") {
+      //     errors.push(data);
+      //   }
+
+      //   errors.forEach(err => toast.error(err));
+
+      //   // 🟢 RETURN — DO NOT THROW
+      //   return {
+      //     __handledError: true,
+      //     errors
+      //   };
+      // }
+      case 401:
+        toast.error("Unauthorised");
+        break;
+      case 404:
+        router.navigate("/notfound");
+        break;
+      case 500:
+        router.navigate("/servererror", { state: { error: data } });
+        break;
+      default:
+        break;
+    }
+    // return Promise.reject(error);
+    return {
+      __handledError: true,
+      errors: [data?.title ?? "Request failed"]
+    };
+  }
+);
+
+export default agent;

@@ -4,8 +4,12 @@ import type { LoginSchema } from "../schemas/loginSchema";
 import type { RegisterSchema } from "../schemas/registerSchema";
 import type { User } from "../types";
 import { useNavigate } from "react-router";
-import { toast } from "react-toastify";
-import { AxiosError } from "axios";
+import type { AxiosResponse } from "axios";
+
+type HandledError = {
+  __handledError: true;
+  errors: string[];
+};
 
 export const useAccount = () => {
   const queryClient = useQueryClient();
@@ -16,44 +20,56 @@ export const useAccount = () => {
       await agent.post("/account/login", creds);
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({queryKey: ["user"]});
+      await queryClient.invalidateQueries({ queryKey: ["user"] });
     }
   });
 
-  const registerUser = useMutation({
+  // const registerUser = useMutation({
+  //   mutationFn: async (creds: RegisterSchema) => {
+  //     await agent.post("/account/register", creds);
+  //     navigate("/activities");
+  //   },
+  //   onSuccess: async () => {
+  //     await queryClient.invalidateQueries({ queryKey: ["user"] });
+  //   },
+  //   onError: (error: AxiosError | string[]) => {
+  //     // CASE 1: Validation errors (array)
+  //     if (Array.isArray(error)) {
+  //       error.forEach((err: string) => {
+  //         if (err.includes("Email")) console.log("Email");
+  //         if (err.includes("Password")) console.log("Password");
+  //       });
+  //       return;
+  //     }
+
+  //     // // CASE 2: Axios error object
+  //     // if (error.response?.data) {
+  //     //   console.log("Server error:", error.response.data);
+  //     //   return;
+  //     // }
+  //   }
+  // });
+
+  const registerUser = useMutation<
+    AxiosResponse | HandledError, // TData
+    unknown,                      // TError (you can type later)
+    RegisterSchema                // TVariables (IMPORTANT!)
+  >({
     mutationFn: async (creds: RegisterSchema) => {
-      await agent.post("/account/register", creds);
-      navigate("/activities");
-    },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({queryKey: ["user"]});
-    },
-    onError: (error: unknown) => {
-      // Narrow it down to AxiosError
-      if (error instanceof AxiosError) {
-        const data = error.response?.data;
+      const result = await agent.post("/account/register", creds);
 
-        // Case 1: backend returned an array of strings
-        if (Array.isArray(data)) {
-          data.forEach((msg: string) => toast.error(msg));
-          return;
-        }
-
-        if (Array.isArray(data)) {
-          data.forEach(value => {
-            if (typeof value === "string") {
-              toast.error(value);
-            }
-          });
-          return;
-        }
-
-        toast.error("Registration failed.");
-        return;
+      // SAFE TYPE GUARD
+      if ("__handledError" in result) {
+        return result;
       }
 
-      // Fallback for non-Axios errors
-      toast.error("An unexpected error occurred.");
+      navigate("/activities");
+      return result;
+    },
+
+    onSuccess: async (result) => {
+      if ("__handledError" in result) return;
+      await queryClient.invalidateQueries({ queryKey: ["user"] });
     }
   });
 
