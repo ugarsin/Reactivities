@@ -62,7 +62,6 @@ export default function ActivityForm() {
           }
         );
       } else {
-        console.log(flattenedData);
         createActivity.mutate(
           flattenedData,
           {

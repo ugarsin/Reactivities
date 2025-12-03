@@ -32,9 +32,7 @@ export const useActivities = (id?: string) => {
       await agent.put("/activities", activity);
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: ["activities"]
-      })
+      await queryClient.invalidateQueries({queryKey: ["activities"]});
     }
   })
 
@@ -44,9 +42,7 @@ export const useActivities = (id?: string) => {
       return response.data; // this is the new id
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ 
-        queryKey: ["activities"] 
-      });
+      await queryClient.invalidateQueries({queryKey: ["activities"]});
     }
   });
 
@@ -55,9 +51,7 @@ export const useActivities = (id?: string) => {
       await agent.delete(`/activities/${id}`);
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: ["activities"]
-      })
+      await queryClient.invalidateQueries({queryKey: ["activities"]});
     }
   })
 

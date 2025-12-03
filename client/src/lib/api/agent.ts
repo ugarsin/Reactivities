@@ -20,19 +20,19 @@ agent.interceptors.response.use(
   },
   async error => {
     store.uiStore.isIdle();
-    console.log("axios error:" + error);
+    // console.log("axios error:" + error);
     const { status, data } = error.response;
     switch (status) {
       case 400:
         if (data.errors) {
           const modalStateErrors = [];
           for (const key in data.errors) {
-            // console.log(data.errors[key]);
             if (data.errors[key]) {
               modalStateErrors.push(data.errors[key]);
             }
           }
-          throw modalStateErrors.flat();
+          modalStateErrors.flat().forEach((err: string) => toast.error(err));
+          return Promise.reject(modalStateErrors.flat());
         } else {
           toast.error(data);
         }
@@ -44,7 +44,7 @@ agent.interceptors.response.use(
         router.navigate("/notfound");
         break;
       case 500:
-        router.navigate("/servererror", {state: {error: data}});
+        router.navigate("/servererror", { state: { error: data } });
         break;
       default:
         break;

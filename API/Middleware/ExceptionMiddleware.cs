@@ -54,7 +54,7 @@ namespace API.Middleware
 				{
 					if (validationErrors.TryGetValue(error.PropertyName, out var existingErrors))
 					{
-						validationErrors[error.PropertyName] = [.. existingErrors, error.ErrorMessage];
+						validationErrors[error.PropertyName] = [..existingErrors, error.ErrorMessage];
 					}
 					else
 					{

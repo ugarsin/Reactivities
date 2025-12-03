@@ -7,7 +7,11 @@ type TextInputProps<T extends FieldValues> =
 
 export default function TextInput<T extends FieldValues>(props: TextInputProps<T>) {
   const { name, control, rules, ...muiProps } = props;
-  const { field, fieldState } = useController({ name, control, rules });
+  const { field, fieldState } = useController({ 
+    name, 
+    control, 
+    rules
+  });
 
   return (
     <TextField
