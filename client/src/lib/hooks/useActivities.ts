@@ -2,10 +2,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { Activity, ActivityCreate } from "../types";
 import agent from "../api/agent";
 import { useLocation } from "react-router";
+import { useAccount } from "./useAccount";
 
 export const useActivities = (id?: string) => {
   const queryClient = useQueryClient();
   const location = useLocation();
+  const { currentUser } = useAccount();
 
   const { data: activities, isPending } = useQuery({
     queryKey: ["activities"],
@@ -15,7 +17,24 @@ export const useActivities = (id?: string) => {
       );
       return response.data;
     },
-    enabled: !id && location.pathname === "/activities"
+    enabled:
+      !id
+      &&
+      location.pathname === "/activities"
+      &&
+      !!currentUser,
+    select:
+      data => {
+        return data.map(activity => {
+          return {
+            ...activity,
+            isHost: currentUser?.id === activity.hostId,
+            isGoing: activity.attendees.some(
+              x => x.id === currentUser?.id
+            )
+          };
+        });
+      }
   });
 
   const { data: activity, isLoading: isLoadingActivity } = useQuery({
@@ -24,7 +43,20 @@ export const useActivities = (id?: string) => {
       const response = await agent.get<Activity>(`/activities/${id}`);
       return response.data;
     },
-    enabled: !!id
+    enabled:
+      !!id
+      &&
+      !!currentUser,
+    select:
+      data => {
+        return {
+          ...data,
+          isHost: currentUser?.id === data.hostId,
+          isGoing: data.attendees.some(
+            x => x.id === currentUser?.id
+          )
+        }
+      }
   })
 
   const updateActivity = useMutation({
@@ -32,7 +64,7 @@ export const useActivities = (id?: string) => {
       await agent.put("/activities", activity);
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({queryKey: ["activities"]});
+      await queryClient.invalidateQueries({ queryKey: ["activities"] });
     }
   })
 
@@ -42,7 +74,7 @@ export const useActivities = (id?: string) => {
       return response.data; // this is the new id
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({queryKey: ["activities"]});
+      await queryClient.invalidateQueries({ queryKey: ["activities"] });
     }
   });
 
@@ -51,9 +83,22 @@ export const useActivities = (id?: string) => {
       await agent.delete(`/activities/${id}`);
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({queryKey: ["activities"]});
+      await queryClient.invalidateQueries({ queryKey: ["activities"] });
     }
   })
+
+  const updateAttendance = useMutation({
+    mutationFn: async (id: string) => {
+      await agent.post(`/activities/${id}/attend`);
+    },
+    onSuccess: async (_, id) => {
+      // Invalidate both the list and the details
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["activities"] }),
+        queryClient.invalidateQueries({ queryKey: ["activities", id] })
+      ]);
+    }
+  });
 
   return {
     activities,
@@ -62,6 +107,7 @@ export const useActivities = (id?: string) => {
     createActivity,
     deleteActivity,
     activity,
-    isLoadingActivity
+    isLoadingActivity,
+    updateAttendance
   }
 }

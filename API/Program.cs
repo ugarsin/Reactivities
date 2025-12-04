@@ -1,27 +1,41 @@
-using Application.Activities.Queries;
-using Microsoft.EntityFrameworkCore;
-using Persistence;
-using AutoMapper;
-using Application.Core;
-using Application.Activities.Validators;
-using FluentValidation;
 using API.Middleware;
-using Domain;
-using Microsoft.AspNetCore.Identity;
+using Application.Activities.Queries;
+using Application.Activities.Validators;
+using Application.Core;
 using Application.Interfaces;
 using Application.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using System.Security.Claims;
-using System.IdentityModel.Tokens.Jwt;
+using AutoMapper;
+using Domain;
+using FluentValidation;
 using Infrastructure.Security;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using Persistence;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddCors();
+builder.Services.AddCors(
+    options =>
+    {
+        options.AddPolicy("CorsPolicy", policy =>
+            {
+                policy
+                    .WithOrigins("http://localhost:3000", "https://localhost:3000")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+            }
+        );
+    }
+);
 
 builder.Services.AddMediatR(options =>
 {

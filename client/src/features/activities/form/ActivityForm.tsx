@@ -115,7 +115,15 @@ export default function ActivityForm() {
           name="location"
         />
         <Box display="flex" justifyContent="end" gap={3}>
-          <Button onClick={() => { }}
+          <Button onClick={() => 
+            {
+              if (id) {
+                navigate(`/activities/${id}`);
+              } else {
+                navigate("/activities");
+              }
+            }
+          }
             color="inherit"
           >Cancel</Button>
           <Button

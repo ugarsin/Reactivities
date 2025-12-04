@@ -3,89 +3,83 @@ import { store } from "../../features/stores/store";
 import { toast } from "react-toastify";
 import { router } from "../../app/router/Routes";
 
+import type { HandledError } from "../hooks/useAccount";
+
 const agent = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true
 });
 
-agent.interceptors.request.use(config => {
+agent.interceptors.request.use((config) => {
   store.uiStore.isBusy();
   return config;
 });
 
-// This ensures ALL errors become NORMAL resolved responses.
+// Convert ALL axios errors into consistent thrown HandledError
 agent.interceptors.response.use(
-  async response => {
+  (response) => {
     store.uiStore.isIdle();
-    return response; // success path
+    return response;
   },
-  async error => {
+  (error) => {
     store.uiStore.isIdle();
 
-    // Defensive: missing response (network error)
+    // No response -> network failure
     if (!error.response) {
-      toast.error("Network error");
-      return { __handledError: true, errors: ["Network error"] };
+      const err: HandledError = {
+        __handledError: true,
+        errors: ["Network error"]
+      };
+      toast.error(err.errors[0]);
+      throw err;
     }
 
     const { status, data } = error.response;
+    const err: HandledError = { __handledError: true, errors: [] };
 
-    // Handle 400 validation
+    // 400 validation
     if (status === 400) {
-      const errors: string[] = [];
-
       if (data?.errors) {
-        // Modelstate validation structure
         for (const key in data.errors) {
-          errors.push(...data.errors[key]);
+          err.errors.push(...data.errors[key]);
         }
       } else if (typeof data === "string") {
-        errors.push(data);
+        err.errors.push(data);
       }
 
-      errors.forEach(err => {
-          if (
-            !(
-              err.includes("Username") 
-              && 
-              err.includes("is already taken")
-            )
-          ) {
-            toast.error(err);
-          }
-        }
-      );
+      err.errors.forEach((e) => {
+        if (!(e.includes("Username") && e.includes("is already taken")))
+          toast.error(e);
+      });
 
-      return {
-        __handledError: true,
-        errors
-      };
+      throw err;
     }
 
-    // Handle 401
+    // 401
     if (status === 401) {
+      err.errors = ["Unauthorized"];
       toast.error("Unauthorized");
-      return { __handledError: true, errors: ["Unauthorized"] };
+      throw err;
     }
 
-    // Handle 404
+    // 404
     if (status === 404) {
       router.navigate("/notfound");
-      return { __handledError: true, errors: ["Not Found"] };
+      err.errors = ["Not Found"];
+      throw err;
     }
 
-    // Handle 500
+    // 500
     if (status === 500) {
       router.navigate("/servererror", { state: { error: data } });
-      return { __handledError: true, errors: ["Server error"] };
+      err.errors = ["Server error"];
+      throw err;
     }
 
-    // Default fallback
+    // fallback
+    err.errors = ["Request failed"];
     toast.error("Request failed");
-    return {
-      __handledError: true,
-      errors: ["Request failed"]
-    };
+    throw err;
   }
 );
 

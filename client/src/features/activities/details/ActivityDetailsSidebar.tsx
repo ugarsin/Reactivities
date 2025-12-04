@@ -1,8 +1,12 @@
 import { Paper, Typography, List, ListItem, Chip, ListItemAvatar, Avatar, ListItemText, Grid as Grid2 } from "@mui/material";
+import type { Activity } from "../../../lib/types";
 
-export default function ActivityDetailsSidebar() {
+type Props = {
+    activity: Activity
+}
+
+export default function ActivityDetailsSidebar({ activity }: Props) {
     const following = true;
-    const isHost = true;
     return (
         <>
             <Paper
@@ -15,42 +19,56 @@ export default function ActivityDetailsSidebar() {
                 }}
             >
                 <Typography variant="h6">
-                    2 people going
+                    {activity.attendees.length} people going
                 </Typography>
             </Paper>
             <Paper sx={{ padding: 2 }}>
-                <Grid2 container alignItems="center">
-                    <Grid2 size={8}>
-                        <List sx={{ display: 'flex', flexDirection: 'column' }}>
-                            <ListItem>
-                                <ListItemAvatar>
-                                    <Avatar
-                                        alt={'attendee name'}
-                                        src={'/assets/user.png'}
+                {
+                    activity.attendees.map(attendee => (
+                        <Grid2 container alignItems="center" key={attendee.id}>
+                            <Grid2 size={8}>
+                                <List sx={{ display: 'flex', flexDirection: 'column' }}>
+                                    <ListItem>
+                                        <ListItemAvatar>
+                                            <Avatar
+                                                variant="rounded"
+                                                alt={attendee.displayName}
+                                                src={attendee.imageUrl}
+                                                sx={{width: 75, height: 75, mr: 3}}
+                                            />
+                                        </ListItemAvatar>
+                                        <ListItemText>
+                                            <Typography variant="h6">{attendee.displayName}</Typography>
+                                        </ListItemText>
+                                    </ListItem>
+                                </List>
+                            </Grid2>
+                            <Grid2 size={4} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1 }}>
+                                {
+                                    activity.hostId === attendee.id 
+                                    && 
+                                    (
+                                    <Chip
+                                        label="Host"
+                                        color="warning"
+                                        variant='filled'
+                                        sx={{ borderRadius: 2 }}
                                     />
-                                </ListItemAvatar>
-                                <ListItemText>
-                                    <Typography variant="h6">Bob</Typography>
-                                </ListItemText>
-                            </ListItem>
-                        </List>
-                    </Grid2>
-                    <Grid2 size={4} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1 }}>
-                        {isHost && (
-                            <Chip
-                                label="Host"
-                                color="warning"
-                                variant='filled'
-                                sx={{borderRadius: 2}}
-                            />
-                        )}
-                        {following && (
-                            <Typography variant="body2" color="orange">
-                                Following
-                            </Typography>
-                        )}
-                    </Grid2>
-                </Grid2>
+                                    )
+                                }
+                                {
+                                    following 
+                                    && 
+                                    (
+                                        <Typography variant="body2" color="orange">
+                                            Following
+                                        </Typography>
+                                    )
+                                }
+                            </Grid2>
+                        </Grid2>
+                    ))
+                }
             </Paper>
         </>
     );

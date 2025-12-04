@@ -4,9 +4,8 @@ import type { LoginSchema } from "../schemas/loginSchema";
 import type { RegisterSchema } from "../schemas/registerSchema";
 import type { User } from "../types";
 import { useNavigate } from "react-router";
-import type { AxiosResponse } from "axios";
 
-type HandledError = {
+export type HandledError = {
   __handledError: true;
   errors: string[];
 };
@@ -15,8 +14,9 @@ export const useAccount = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const loginUser = useMutation({
-    mutationFn: async (creds: LoginSchema) => {
+  // LOGIN ---------------------------------------------
+  const loginUser = useMutation<void, HandledError, LoginSchema>({
+    mutationFn: async (creds) => {
       await agent.post("/account/login", creds);
     },
     onSuccess: async () => {
@@ -24,74 +24,53 @@ export const useAccount = () => {
     }
   });
 
-  // const registerUser = useMutation({
-  //   mutationFn: async (creds: RegisterSchema) => {
-  //     await agent.post("/account/register", creds);
-  //     navigate("/activities");
-  //   },
-  //   onSuccess: async () => {
-  //     await queryClient.invalidateQueries({ queryKey: ["user"] });
-  //   },
-  //   onError: (error: AxiosError | string[]) => {
-  //     // CASE 1: Validation errors (array)
-  //     if (Array.isArray(error)) {
-  //       error.forEach((err: string) => {
-  //         if (err.includes("Email")) console.log("Email");
-  //         if (err.includes("Password")) console.log("Password");
-  //       });
-  //       return;
-  //     }
-
-  //     // // CASE 2: Axios error object
-  //     // if (error.response?.data) {
-  //     //   console.log("Server error:", error.response.data);
-  //     //   return;
-  //     // }
-  //   }
-  // });
-
-  const registerUser = useMutation<
-    AxiosResponse | HandledError, // TData
-    unknown,                      // TError (you can type later)
-    RegisterSchema                // TVariables (IMPORTANT!)
-  >({
-    mutationFn: async (creds: RegisterSchema) => {
-      const result = await agent.post("/account/register", creds);
-
-      // SAFE TYPE GUARD
-      if ("__handledError" in result) {
-        return result;
-      }
-
+  // REGISTER ------------------------------------------
+  const registerUser = useMutation<User, HandledError, RegisterSchema>({
+    mutationFn: async (creds) => {
+      const response = await agent.post<User>("/account/register", creds);
       navigate("/activities");
-      return result;
+      return response.data;
     },
-
-    onSuccess: async (result) => {
-      if ("__handledError" in result) return;
+    onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["user"] });
     }
   });
 
-  const logoutUser = useMutation({
+  // LOGOUT --------------------------------------------
+  const logoutUser = useMutation<void, HandledError>({
     mutationFn: async () => {
       await agent.post("/account/logout");
     },
     onSuccess: async () => {
-      // queryClient.removeQueries({queryKey: ["user"]});
-      // queryClient.removeQueries({queryKey: ["activities"]});
       queryClient.clear();
       navigate("/");
     }
   });
 
-  const { data: currentUser, isLoading: loadingUserInfo } = useQuery({
+  // // GET CURRENT USER ----------------------------------
+  // const { data: currentUser, isLoading: loadingUserInfo } = useQuery<
+  //   User | null,
+  //   HandledError
+  // >({
+  //   queryKey: ["user"],
+  //   queryFn: async () => {
+  //     const response = await agent.get<User>("/account/user-info");
+  //     return response.data ?? null;
+  //   },
+  //   enabled: !queryClient.getQueryData(["data"])
+  // });
+
+  const { data: currentUser, isLoading: loadingUserInfo } = useQuery<
+    User | null,
+    HandledError
+  >({
     queryKey: ["user"],
     queryFn: async () => {
       const response = await agent.get<User>("/account/user-info");
-      return response.data;
+      return response.data ?? null;
     },
-    enabled: !queryClient.getQueryData(["data"])
+    retry: 0,
+    refetchOnWindowFocus: false,
   });
 
   return {
@@ -101,4 +80,4 @@ export const useAccount = () => {
     currentUser,
     loadingUserInfo
   };
-}
+};

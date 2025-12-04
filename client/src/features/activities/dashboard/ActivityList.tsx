@@ -5,17 +5,19 @@ import { useActivities } from "../../../lib/hooks/useActivities";
 export default function ActivityList() {
     const {activities, isPending} = useActivities();
 
-    if (!activities || isPending) {
-      <Typography>Loading...</Typography>
+    if (isPending) {
+      return <Typography>Loading...</Typography>
     }
 
     return (
     <Box sx={{display: "flex", flexDirection: "column", gap: 3}}>
       {activities?.map(activity => (
-        <ActivityCard 
-          key={activity.id} 
-          activity={activity} 
-        />
+        <Box 
+          id={activity.id} 
+          key={activity.id}
+        >
+          <ActivityCard activity={activity} />
+        </Box>
       ))};
     </Box>
   )
