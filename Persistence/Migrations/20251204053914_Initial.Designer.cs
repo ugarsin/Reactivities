@@ -11,8 +11,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251130085533_RefreshToken")]
-    partial class RefreshToken
+    [Migration("20251204053914_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -59,6 +59,27 @@ namespace Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Activities");
+                });
+
+            modelBuilder.Entity("Domain.ActivityAttendee", b =>
+                {
+                    b.Property<string>("ActivityId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DateJoined")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsHost")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ActivityId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ActivitiesAttendees");
                 });
 
             modelBuilder.Entity("Domain.User", b =>
@@ -267,6 +288,25 @@ namespace Persistence.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.ActivityAttendee", b =>
+                {
+                    b.HasOne("Domain.Activity", "Activity")
+                        .WithMany("Attendees")
+                        .HasForeignKey("ActivityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.User", "User")
+                        .WithMany("Activities")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Activity");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -316,6 +356,16 @@ namespace Persistence.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Activity", b =>
+                {
+                    b.Navigation("Attendees");
+                });
+
+            modelBuilder.Entity("Domain.User", b =>
+                {
+                    b.Navigation("Activities");
                 });
 #pragma warning restore 612, 618
         }

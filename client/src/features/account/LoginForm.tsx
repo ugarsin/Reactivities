@@ -26,7 +26,7 @@ export default function LoginForm() {
       data, 
       {
       onSuccess: () => {
-          navigate(location.state.from || "/activities")
+          navigate(location?.state?.from || "/activities")
         }
       }
     );

@@ -104,5 +104,14 @@ namespace API.Controllers
 
             return NoContent();
         }
+
+        [HttpGet("debug-user")]
+        public IActionResult DebugUser()
+        {
+            var claims = HttpContext.User.Claims
+                .Select(c => new { c.Type, c.Value });
+
+            return Ok(claims);
+        }
     }
 }

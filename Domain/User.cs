@@ -13,5 +13,6 @@ namespace Domain
         public string? Bio { get; set; }
         public string? ImageUrl { get; set; }
         public string RefreshToken { get; set; } = "";
+        public ICollection<ActivityAttendee> Activities { get; set; } = [];
     }
 }

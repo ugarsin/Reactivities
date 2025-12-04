@@ -15,6 +15,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
+using Infrastructure.Security;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -103,6 +105,24 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddAuthorization();
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IUserAccessor, UserAccessor>();
+
+builder.Services.AddAuthorization(
+    options =>
+    {
+        options.AddPolicy(
+            "IsActivityHost",
+            policy =>
+            {
+                policy.Requirements.Add(new IsHostRequirement());
+            }
+        );
+    }
+);
+
+builder.Services.AddTransient<IAuthorizationHandler, IsHostRequirementHandler>();
 
 var app = builder.Build();
 
