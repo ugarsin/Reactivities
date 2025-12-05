@@ -21,14 +21,17 @@ public class AppDbContext : IdentityDbContext<User>
         builder.Entity<ActivityAttendee>()
             .HasOne(o => o.User)
             .WithMany(m => m.Activities)
-            .HasForeignKey(fk => fk.UserId);
+            .HasForeignKey(fk => fk.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<ActivityAttendee>()
             .HasOne(o => o.Activity)
             .WithMany(m => m.Attendees)
-            .HasForeignKey(fk => fk.ActivityId);
+            .HasForeignKey(fk => fk.ActivityId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 
     public DbSet<Domain.Activity> Activities { get; set; }
     public DbSet<ActivityAttendee> ActivitiesAttendees { get; set; }
+    public DbSet<Photo> Photos{ get; set; }
 }

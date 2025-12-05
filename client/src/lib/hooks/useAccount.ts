@@ -17,7 +17,7 @@ export const useAccount = () => {
   // LOGIN ---------------------------------------------
   const loginUser = useMutation<void, HandledError, LoginSchema>({
     mutationFn: async (creds) => {
-      await agent.post("/account/login", creds);
+      await agent.post("/accounts/login", creds);
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["user"] });
@@ -27,7 +27,7 @@ export const useAccount = () => {
   // REGISTER ------------------------------------------
   const registerUser = useMutation<User, HandledError, RegisterSchema>({
     mutationFn: async (creds) => {
-      const response = await agent.post<User>("/account/register", creds);
+      const response = await agent.post<User>("/accounts/register", creds);
       navigate("/activities");
       return response.data;
     },
@@ -39,7 +39,7 @@ export const useAccount = () => {
   // LOGOUT --------------------------------------------
   const logoutUser = useMutation<void, HandledError>({
     mutationFn: async () => {
-      await agent.post("/account/logout");
+      await agent.post("/accounts/logout");
     },
     onSuccess: async () => {
       queryClient.clear();
@@ -66,7 +66,7 @@ export const useAccount = () => {
   >({
     queryKey: ["user"],
     queryFn: async () => {
-      const response = await agent.get<User>("/account/user-info");
+      const response = await agent.get<User>("/accounts/user-info");
       return response.data ?? null;
     },
     retry: 0,

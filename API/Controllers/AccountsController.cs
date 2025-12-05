@@ -7,13 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    public class AccountController : BaseApiController
+    public class AccountsController : BaseApiController
     {
         private readonly SignInManager<User> _signInManager;
         private readonly IJwtTokenService _jwtTokenService;
         private readonly UserManager<User> _userManager;
 
-        public AccountController(
+        public AccountsController(
             SignInManager<User> signInManager,
             UserManager<User> userManager,
             IJwtTokenService jwtTokenService

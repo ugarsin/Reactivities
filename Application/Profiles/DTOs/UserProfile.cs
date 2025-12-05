@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Activities.Profiles.DTOs
+namespace Application.Profiles.DTOs
 {
     public class UserProfile
     {
