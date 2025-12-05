@@ -35,6 +35,14 @@ export default function ActivityDetailsSidebar({ activity }: Props) {
                                                 alt={attendee.displayName}
                                                 src={attendee.imageUrl}
                                                 sx={{width: 75, height: 75, mr: 3}}
+                                                slotProps={{
+                                                    img: {
+                                                        style: {
+                                                            objectFit: "cover",
+                                                            objectPosition: "top",   // 👈 the key fix
+                                                        }
+                                                    }
+                                                }}
                                             />
                                         </ListItemAvatar>
                                         <ListItemText>
@@ -45,20 +53,20 @@ export default function ActivityDetailsSidebar({ activity }: Props) {
                             </Grid2>
                             <Grid2 size={4} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1 }}>
                                 {
-                                    activity.hostId === attendee.id 
-                                    && 
+                                    activity.hostId === attendee.id
+                                    &&
                                     (
-                                    <Chip
-                                        label="Host"
-                                        color="warning"
-                                        variant='filled'
-                                        sx={{ borderRadius: 2 }}
-                                    />
+                                        <Chip
+                                            label="Host"
+                                            color="warning"
+                                            variant='filled'
+                                            sx={{ borderRadius: 2 }}
+                                        />
                                     )
                                 }
                                 {
-                                    following 
-                                    && 
+                                    following
+                                    &&
                                     (
                                         <Typography variant="body2" color="orange">
                                             Following

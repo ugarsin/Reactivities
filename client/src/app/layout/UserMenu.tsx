@@ -31,8 +31,20 @@ export default function UserMenu() {
           size: "1.1rem"
         }}
       >
-        <Box display="flex" alignItems="center" gap={1}>
-          <Avatar></Avatar>
+        <Box display="flex" alignItems="center">
+          <Avatar
+            alt={currentUser?.displayName}
+            src={currentUser?.imageUrl}
+            sx={{ width: 75, height: 75, mr: 3 }}
+            slotProps={{
+              img: {
+                style: {
+                  objectFit: "cover",
+                  objectPosition: "top",   // 👈 the key fix
+                }
+              }
+            }}
+          ></Avatar>
           {currentUser?.displayName}
         </Box>
       </Button>

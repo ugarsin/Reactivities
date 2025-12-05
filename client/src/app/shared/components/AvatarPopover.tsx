@@ -28,6 +28,15 @@ export default function AvatarPopover({ profile }: Props) {
         key={profile.id}
         alt={profile.displayName + " image"}
         src={profile.imageUrl}
+        sx={{ width: 40, height: 40 }}
+        slotProps={{
+          img: {
+            style: {
+              objectFit: "cover",
+              objectPosition: "top",   // 👈 the key fix
+            }
+          }
+        }}
         component={Link}
         to={`/profiles/${profile.id}`}
         onMouseEnter={handlePopoverOpen}

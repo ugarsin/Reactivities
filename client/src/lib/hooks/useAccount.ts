@@ -47,19 +47,7 @@ export const useAccount = () => {
     }
   });
 
-  // // GET CURRENT USER ----------------------------------
-  // const { data: currentUser, isLoading: loadingUserInfo } = useQuery<
-  //   User | null,
-  //   HandledError
-  // >({
-  //   queryKey: ["user"],
-  //   queryFn: async () => {
-  //     const response = await agent.get<User>("/account/user-info");
-  //     return response.data ?? null;
-  //   },
-  //   enabled: !queryClient.getQueryData(["data"])
-  // });
-
+  // GET CURRENT USER ----------------------------------
   const { data: currentUser, isLoading: loadingUserInfo } = useQuery<
     User | null,
     HandledError
