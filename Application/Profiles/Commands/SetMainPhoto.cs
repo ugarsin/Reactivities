@@ -1,6 +1,8 @@
 ﻿using Application.Core;
 using Application.Interfaces;
+using Domain;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Persistence;
 using System;
 using System.Collections.Generic;
@@ -25,11 +27,30 @@ namespace Application.Profiles.Commands
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var user = await userAccessor.GetUserWithPhotosAsync();
+                if (user == null)
+                    return Result<Unit>.Failure("User not found", 404);
+
                 var photo = user.Photos.FirstOrDefault(x => x.Id == request.PhotoId);
-                if (photo == null) return Result<Unit>.Failure("Cannot find photo", 400);
+                if (photo == null)
+                    return Result<Unit>.Failure("Photo not found", 400);
+
+                // Update user profile picture
                 user.ImageUrl = photo.Url;
-                var result = await context.SaveChangesAsync(cancellationToken) > 0;
-                return result ? Result<Unit>.Success(Unit.Value) : Result<Unit>.Failure("Problem updating photo", 400);
+
+                // Clear all IsMain flags
+                await context.Photos
+                    .Where(p => p.UserId == user.Id)
+                    .ExecuteUpdateAsync(setters => setters.SetProperty(p => p.IsMain, false));
+
+                // Mark selected as main
+                await context.Photos
+                    .Where(p => p.Id == request.PhotoId)
+                    .ExecuteUpdateAsync(setters => setters.SetProperty(p => p.IsMain, true));
+
+                // Save user.ImageUrl change only
+                await context.SaveChangesAsync(cancellationToken);
+
+                return Result<Unit>.Success(Unit.Value);
             }
         }
     }

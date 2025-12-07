@@ -4,7 +4,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { useState } from 'react';
 import { useAccount } from '../../lib/hooks/useAccount';
 import { Avatar, Box } from '@mui/material';
-import { useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 
 export default function UserMenu() {
   const navigate = useNavigate();
@@ -63,7 +63,11 @@ export default function UserMenu() {
                 },
               }}
             >
-              <MenuItem onClick={handleClose}>Profile</MenuItem>
+              <MenuItem
+                component={Link}
+                to={`/profiles/${currentUser.id}`}
+                onClick={handleClose}
+              >Profile</MenuItem>
               <MenuItem onClick={handleClose}>My account</MenuItem>
               <MenuItem onClick={logOut}>Logout</MenuItem>
             </Menu>

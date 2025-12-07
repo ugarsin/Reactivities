@@ -11,42 +11,64 @@ export default function ProfileCard({ profile }: Props) {
   const following = false;
   return (
     <Link
-      to={`/profiles/${profile.id}`}
-      style={{textDecoration: "none"}}
+      to={`/profiles/${profile?.id}`}
+      style={{ textDecoration: "none" }}
     >
       <Card
-        sx={{borderRadius: 3, p: 3, maxWidth: 300, textDecoration: "none"}}
+        sx={{ borderRadius: 3, p: 3, maxWidth: 300, textDecoration: "none" }}
       >
         <CardMedia
           component="img"
-          src={profile?.imageUrl || "/images/user.png"}
           alt={profile.displayName + " image"}
+          src={profile?.imageUrl || "/images/user.png"}
+          sx={{
+            width: 200,
+            height: 200,
+            objectFit: "cover",
+            objectPosition: "top",
+            borderRadius: 2, // optional
+          }}
         />
         <CardContent>
           <Box
-            display="flex" 
+            display="flex"
             alignItems="center"
             gap={1}
           >
             <Typography
               variant="h5"
             >
-              {profile.displayName}
+              {
+                profile.displayName
+                &&
+                (
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      textOverflow: "ellipsis",
+                      overflow: "hidden",
+                      whiteSpace: "nowrap"
+                    }}
+                  >
+                    {profile.bio}
+                  </Typography>
+                )
+              }
             </Typography>
             {
               following
               &&
               <Chip size="small" label="following" color="secondary" variant="outlined">
-              </Chip> 
+              </Chip>
             }
           </Box>
         </CardContent>
         <Divider></Divider>
         <Box
-          sx={{display: "flex", alignItems: "center", justifyContent: "start"}}
+          sx={{ display: "flex", alignItems: "center", justifyContent: "start" }}
         >
           <Person></Person>
-          <Typography sx={{ml: 1}}>20 Followers</Typography>
+          <Typography sx={{ ml: 1 }}>20 Followers</Typography>
         </Box>
       </Card>
     </Link>

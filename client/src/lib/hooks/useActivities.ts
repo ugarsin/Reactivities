@@ -12,9 +12,7 @@ export const useActivities = (id?: string) => {
   const { data: activities, isPending } = useQuery({
     queryKey: ["activities"],
     queryFn: async () => {
-      const response = await agent.get<Activity[]>(
-        "/activities"
-      );
+      const response = await agent.get<Activity[]>("/activities");
       return response.data;
     },
     enabled:
@@ -26,12 +24,15 @@ export const useActivities = (id?: string) => {
     select:
       data => {
         return data.map(activity => {
+          const host = activity.attendees.find(x => x.id === activity.hostId);
+          const url = host?.imageUrl;
           return {
             ...activity,
             isHost: currentUser?.id === activity.hostId,
             isGoing: activity.attendees.some(
               x => x.id === currentUser?.id
-            )
+            ),
+            hostImageUrl: url
           };
         });
       }
@@ -48,13 +49,16 @@ export const useActivities = (id?: string) => {
       &&
       !!currentUser,
     select:
-      data => {
+      (data): Activity => {
+        const host = data.attendees.find(x => x.id === data.hostId);
+        const url = host?.imageUrl;
         return {
           ...data,
           isHost: currentUser?.id === data.hostId,
           isGoing: data.attendees.some(
             x => x.id === currentUser?.id
-          )
+          ),
+          hostImageUrl: url
         }
       }
   })

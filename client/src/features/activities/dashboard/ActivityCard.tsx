@@ -12,12 +12,26 @@ type Props = {
 export default function ActivityCard({ activity }: Props) {
   const label = activity.isHost ? "You are hosting" : "You are going";
   const color = activity.isHost ? "secondary" : activity.isGoing ? "warning" : "default";
-  
+
   return (
     <Card sx={{ borderRadius: 3 }}>
       <Box display="flex" alignItems="center" justifyContent="space-between">
         <CardHeader
-          avatar={<Avatar sx={{ height: 80, width: 80 }} />}
+          avatar={
+            <Avatar
+              src={activity.hostImageUrl}
+              sx={{ width: 80, height: 80 }}
+              slotProps={{
+                img: {
+                  style: {
+                    objectFit: "cover",
+                    objectPosition: "top",   // 👈 the key fix
+                  }
+                }
+              }}
+              alt={`${activity.hostDisplayName}'s image`}
+            />
+          }
           title={activity.title}
           slotProps={{
             title: {
@@ -29,7 +43,7 @@ export default function ActivityCard({ activity }: Props) {
           }}
           subheader={
             <>
-              Hosted by{" "} <Link to={`/profiles/${activity.id}`}>{activity.hostDisplayName}</Link>
+              Hosted by{" "} <Link to={`/profiles/${activity.hostId}`}>{activity.hostDisplayName}</Link>
             </>
           }
         />
@@ -47,7 +61,7 @@ export default function ActivityCard({ activity }: Props) {
         </Box>
       </Box>
       <Divider sx={{ mb: 3 }}></Divider>
-      <CardContent sx={{p: 0}}>
+      <CardContent sx={{ p: 0 }}>
         <Box display="flex" alignItems="center" mb={2} px={2}>
           <Box display="flex" flexGrow={0} alignItems="center">
             <AccessTime sx={{ mr: 1 }}></AccessTime>
