@@ -25,5 +25,17 @@ namespace API.Helpers
                 Expires = expiresAt
             };
         }
+
+        public CookieOptions BuildDeleteOptions()
+        {
+            return new CookieOptions
+            {
+                HttpOnly = _defaults.HttpOnly,
+                Secure = true,
+                SameSite = Enum.Parse<SameSiteMode>(_defaults.SameSite, ignoreCase: true),
+                Path = _defaults.Path,
+                Expires = DateTime.UnixEpoch  // ensures deletion
+            };
+        }
     }
 }

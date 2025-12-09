@@ -29,10 +29,23 @@ public class AppDbContext : IdentityDbContext<User>
             .WithMany(m => m.Attendees)
             .HasForeignKey(fk => fk.ActivityId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<UserFollow>(k => k.HasKey(a => new { a.FollowingId, a.FollowerId }));
+
+        builder.Entity<UserFollow>()
+            .HasOne(o => o.Following)
+            .WithMany(m => m.Followers)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<UserFollow>()
+            .HasOne(o => o.Follower)
+            .WithMany(m => m.Followings)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 
     public DbSet<Domain.Activity> Activities { get; set; }
     public DbSet<ActivityAttendee> ActivitiesAttendees { get; set; }
     public DbSet<Photo> Photos{ get; set; }
     public DbSet<Comment> Comments { get; set; }
+    public DbSet<UserFollow> UsersFollows { get; set; }
 }

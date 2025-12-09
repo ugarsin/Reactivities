@@ -50,28 +50,6 @@ namespace API.Controllers
             cookieConfig = _cookieOptions.BuildCookieOptions(token.ExpiresAt.AddDays(30));
             Response.Cookies.Append("refresh_token", token.RefreshToken, cookieConfig);
             return Ok(new { message = "Logged in successfully" });
-            //// Write Access Token Cookie
-            //Response.Cookies.Append("access_token", token.AccessToken, 
-            //    new CookieOptions
-            //    {
-            //        HttpOnly = _options.Value.HttpOnly, //true,
-            //        Secure = true, // HTTPS only!
-            //        SameSite = SameSiteMode.None,
-            //        Path = "/",
-            //        Expires = token.ExpiresAt
-            //    }
-            //);
-            //// Write Refresh Token Cookie
-            //Response.Cookies.Append("refresh_token", token.RefreshToken, 
-            //    new CookieOptions
-            //    {
-            //        HttpOnly = _options.Value.HttpOnly, //true,
-            //        Secure = true,
-            //        SameSite = SameSiteMode.None,
-            //        Path = "/",
-            //        Expires = DateTime.UtcNow.AddDays(30) // typical refresh window
-            //    }
-            //);
         }
 
         [HttpPost("register")]
@@ -116,8 +94,10 @@ namespace API.Controllers
         [HttpPost("logout")]
         public ActionResult Logout()
         {
-            Response.Cookies.Delete("access_token");
-            Response.Cookies.Delete("refresh_token");
+            var deleteOptions = _cookieOptions.BuildDeleteOptions();
+
+            Response.Cookies.Delete("access_token", deleteOptions);
+            Response.Cookies.Delete("refresh_token", deleteOptions);
 
             return NoContent();
         }
