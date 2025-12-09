@@ -2,17 +2,16 @@ import axios from "axios";
 import { store } from "../../features/stores/store";
 import { toast } from "react-toastify";
 import { router } from "../../app/router/Routes";
-
 import type { HandledError } from "../hooks/useAccount";
 
 const agent = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-  withCredentials: true
+  withCredentials: true	
 });
 
 agent.interceptors.request.use((config) => {
-  store.uiStore.isBusy();
-  return config;
+	store.uiStore.isBusy();
+	return config;
 });
 
 // Convert ALL axios errors into consistent thrown HandledError

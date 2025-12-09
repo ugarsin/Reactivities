@@ -17,7 +17,8 @@ export const useAccount = () => {
   // LOGIN ---------------------------------------------
   const loginUser = useMutation<void, HandledError, LoginSchema>({
     mutationFn: async (creds) => {
-      await agent.post("/accounts/login", creds);
+      const result = await agent.post("/accounts/login", creds);
+      return result.data;
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["user"] });

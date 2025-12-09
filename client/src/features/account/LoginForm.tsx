@@ -22,14 +22,8 @@ export default function LoginForm() {
     }
   });
   const onSubmit = async (data: LoginSchema) => {
-    await loginUser.mutateAsync(
-      data, 
-      {
-      onSuccess: () => {
-          navigate(location?.state?.from || "/activities")
-        }
-      }
-    );
+    await loginUser.mutateAsync(data);
+    navigate(location?.state?.from || "/activities");
   }
   const navigate = useNavigate();
   const location = useLocation();

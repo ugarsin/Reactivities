@@ -1,9 +1,13 @@
-﻿using API.DTOs;
+﻿using API.Config;
+using API.DTOs;
+using API.Interfaces;
 using Application.DTOs;
 using Application.Interfaces;
 using Domain;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace API.Controllers
 {
@@ -11,17 +15,23 @@ namespace API.Controllers
     {
         private readonly SignInManager<User> _signInManager;
         private readonly IJwtTokenService _jwtTokenService;
+        private readonly IOptions<JwtCookieOptions> _options;
+        private readonly ICookieOptions _cookieOptions;
         private readonly UserManager<User> _userManager;
 
         public AccountsController(
             SignInManager<User> signInManager,
             UserManager<User> userManager,
-            IJwtTokenService jwtTokenService
+            IJwtTokenService jwtTokenService,
+            IOptions<JwtCookieOptions> options,
+            ICookieOptions cookieOptions
         )
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _jwtTokenService = jwtTokenService;
+            _options = options;
+            _cookieOptions = cookieOptions;
         }
 
         [HttpPost("login")]
@@ -35,26 +45,33 @@ namespace API.Controllers
             var token = _jwtTokenService.GenerateToken(user.Id, user.UserName!, roles);
             user.RefreshToken = token.RefreshToken;
             await _userManager.UpdateAsync(user);
-            //return Ok(token);
-            // Write Access Token Cookie
-            Response.Cookies.Append("access_token", token.AccessToken, new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true, // HTTPS only!
-                SameSite = SameSiteMode.Strict,
-                Path = "/",
-                Expires = token.ExpiresAt
-            });
-            // Write Refresh Token Cookie
-            Response.Cookies.Append("refresh_token", token.RefreshToken, new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Strict,
-                Path = "/",
-                Expires = DateTime.UtcNow.AddDays(30) // typical refresh window
-            });
+            var cookieConfig = _cookieOptions.BuildCookieOptions(token.ExpiresAt);
+            Response.Cookies.Append("access_token", token.AccessToken, cookieConfig);
+            cookieConfig = _cookieOptions.BuildCookieOptions(token.ExpiresAt.AddDays(30));
+            Response.Cookies.Append("refresh_token", token.RefreshToken, cookieConfig);
             return Ok(new { message = "Logged in successfully" });
+            //// Write Access Token Cookie
+            //Response.Cookies.Append("access_token", token.AccessToken, 
+            //    new CookieOptions
+            //    {
+            //        HttpOnly = _options.Value.HttpOnly, //true,
+            //        Secure = true, // HTTPS only!
+            //        SameSite = SameSiteMode.None,
+            //        Path = "/",
+            //        Expires = token.ExpiresAt
+            //    }
+            //);
+            //// Write Refresh Token Cookie
+            //Response.Cookies.Append("refresh_token", token.RefreshToken, 
+            //    new CookieOptions
+            //    {
+            //        HttpOnly = _options.Value.HttpOnly, //true,
+            //        Secure = true,
+            //        SameSite = SameSiteMode.None,
+            //        Path = "/",
+            //        Expires = DateTime.UtcNow.AddDays(30) // typical refresh window
+            //    }
+            //);
         }
 
         [HttpPost("register")]

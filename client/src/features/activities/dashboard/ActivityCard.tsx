@@ -1,9 +1,10 @@
-import { Avatar, Box, Button, Card, CardActions, CardContent, CardHeader, Chip, Divider, Typography } from "@mui/material";
+import { Avatar, Box, Button, Card, CardActions, CardContent, CardHeader, Divider, Paper, Typography } from "@mui/material";
 import type { Activity } from "../../../lib/types";
 import { Link } from "react-router";
 import { AccessTime, Place } from "@mui/icons-material";
 import { formatDate } from "../../../lib/util/util";
 import AvatarPopover from "../../../app/shared/components/AvatarPopover";
+import StyledChip from "../../../app/shared/components/StyledChip";
 
 type Props = {
   activity: Activity;
@@ -14,50 +15,59 @@ export default function ActivityCard({ activity }: Props) {
   const color = activity.isHost ? "secondary" : activity.isGoing ? "warning" : "default";
 
   return (
-    <Card sx={{ borderRadius: 3 }}>
-      <Box display="flex" alignItems="center" justifyContent="space-between">
-        <CardHeader
-          avatar={
-            <Avatar
-              src={activity.hostImageUrl}
-              sx={{ width: 80, height: 80 }}
-              slotProps={{
-                img: {
-                  style: {
-                    objectFit: "cover",
-                    objectPosition: "top",   // 👈 the key fix
-                  }
+    // <Card
+    //   sx={{
+    //     borderRadius: 3,
+    //     width: "100%",
+    //     boxSizing: "border-box"
+    //   }}
+    // >
+    <Card component={Paper} sx={{ position: 'relative', mb: 2, backgroundColor: 'white', overflow: 'hidden', width: "100%" }}>
+      <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1 }}>
+        {activity.isCancelled && (
+          <StyledChip label="Cancelled" color="error" sx={{ borderRadius: 2 }} />
+        )}
+        {(activity.isHost || activity.isGoing) && (
+          <StyledChip disabled={activity.isCancelled} label={label} color={color} sx={{ borderRadius: 2 }} />
+        )}
+      </Box>
+      <CardHeader
+        sx={{
+          backgroundColor: "transparent",
+          width: "100%"
+        }}
+        avatar={
+          <Avatar
+            src={activity.hostImageUrl}
+            sx={{ width: 80, height: 80 }}
+            slotProps={{
+              img: {
+                style: {
+                  objectFit: "cover",
+                  objectPosition: "top",   // 👈 the key fix
                 }
-              }}
-              alt={`${activity.hostDisplayName}'s image`}
-            />
-          }
-          title={activity.title}
-          slotProps={{
-            title: {
-              sx: {
-                fontWeight: "bold",
-                fontSize: 20
-              },
+              }
+            }}
+            alt={`${activity.hostDisplayName}'s image`}
+          />
+        }
+        title={activity.title}
+        slotProps={{
+          title: {
+            sx: {
+              fontWeight: "bold",
+              fontSize: 20
             },
-          }}
-          subheader={
-            <>
-              Hosted by{" "} <Link to={`/profiles/${activity.hostId}`}>{activity.hostDisplayName}</Link>
-            </>
-          }
-        />
+          },
+        }}
+        subheader={
+          <>
+            Hosted by{" "} <Link to={`/profiles/${activity.hostId}`}>{activity.hostDisplayName}</Link>
+          </>
+        }
+      />
+      <Box display="flex" alignItems="center" justifyContent="space-between">
         <Box display="flex" flexDirection="column" gap={2} mr={2}>
-          {
-            (activity.isHost || activity.isGoing)
-            &&
-            <Chip label={label} color={color} sx={{ borderRadius: 2 }} />
-          }
-          {
-            (activity.isCancelled)
-            &&
-            <Chip label="Cancelled" color="error" sx={{ borderRadius: 2 }} />
-          }
         </Box>
       </Box>
       <Divider sx={{ mb: 3 }}></Divider>

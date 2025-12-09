@@ -1,4 +1,8 @@
+using API.Config;
+using API.Helpers;
+using API.Interfaces;
 using API.Middleware;
+using API.SignalR;
 using Application.Activities.Queries;
 using Application.Activities.Validators;
 using Application.Core;
@@ -29,7 +33,11 @@ builder.Services.AddCors(
         options.AddPolicy("CorsPolicy", policy =>
             {
                 policy
-                    .WithOrigins("http://localhost:3000", "https://localhost:3000")
+                    .WithOrigins(
+                        "http://localhost:3000", 
+                        "https://localhost:3000", 
+                        "https://172.28.0.1:3000"
+                    )
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials();
@@ -119,6 +127,19 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+var cookieConfig = 
+    builder.Services.Configure<JwtCookieOptions>(
+        builder.Configuration.GetSection("JwtCookie")
+    );
+//builder.Services.ConfigureApplicationCookie(
+//    options =>
+//    {
+//        options.Cookie.HttpOnly = true;
+//        options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // or None in dev
+//        options.Cookie.SameSite = SameSiteMode.None;
+//    }
+//);
+
 builder.Services.AddAuthorization();
 
 builder.Services.AddHttpContextAccessor();
@@ -146,6 +167,11 @@ builder.Services.Configure<CloudinarySettings>(
 
 builder.Services.AddScoped<IPhotoService, PhotoService>();
 
+builder.Services.AddSignalR();
+
+builder.Services.AddScoped<ICookieOptions, CookieOptionsHelper>();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
@@ -154,7 +180,11 @@ app.UseMiddleware<ExceptionMiddleware>();
 app.UseCors(options =>
 {
     options
-    .WithOrigins("http://localhost:3000", "https://localhost:3000")
+    .WithOrigins(
+        "http://localhost:3000", 
+        "https://localhost:3000", 
+        "https://172.28.0.1:3000"
+    )
     .AllowAnyMethod()
     .AllowAnyHeader()
     .AllowCredentials();
@@ -171,6 +201,8 @@ if (app.Environment.IsDevelopment())
 
 app.MapControllers();
 //app.MapGroup("api").MapIdentityApi<User>();
+
+app.MapHub<CommentHub>("/comments");
 
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;

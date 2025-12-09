@@ -1,4 +1,7 @@
-export type ActivityCreate = Omit<"id" | "isCancelled">;
+export type PagedList<T, TCursor> = {
+  items: T[],
+  nextCursor: TCursor
+}
 
 export type Activity = {
   id: string;
@@ -39,6 +42,15 @@ type User = {
   imageUrl?: string;
 }
 
+type ChatComment = {
+  id: string;
+  createdAt: Date;
+  body: string;
+  userId: string;
+  displayName: string;
+  imageUrl?: string;
+}
+
 export type LocationIQSuggestion = {
   place_id: string;
   osm_id: string;
@@ -70,3 +82,5 @@ export type LocationIQAddress = {
   country_code: string;
   neighbourhood?: string;
 }
+
+export type ActivityCreate = Omit<"id" | "isCancelled">;

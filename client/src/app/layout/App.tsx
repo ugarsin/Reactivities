@@ -18,11 +18,13 @@ export default function App() {
           <>
             <NavBar />
             <Container 
-              maxWidth="xl" 
-              sx={{ 
-                mt: 3, 
+              maxWidth={false}
+              sx={{
+                width: "100%",
+                pt: 14, 
                 backgroundColor: "#f4f4f4", 
-              }}>
+              }}
+            >
               <Outlet />
             </Container>
           </>

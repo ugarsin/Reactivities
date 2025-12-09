@@ -9,15 +9,7 @@ export default function ActivityDetailsSidebar({ activity }: Props) {
     const following = true;
     return (
         <>
-            <Paper
-                sx={{
-                    textAlign: 'center',
-                    border: 'none',
-                    backgroundColor: 'primary.main',
-                    color: 'white',
-                    p: 2,
-                }}
-            >
+            <Paper sx={{ display: "flex", direction: "column", gap: 3, borderRadius: 3 }}>
                 <Typography variant="h6">
                     {activity.attendees.length} people going
                 </Typography>
@@ -34,7 +26,7 @@ export default function ActivityDetailsSidebar({ activity }: Props) {
                                                 variant="rounded"
                                                 alt={attendee.displayName}
                                                 src={attendee.imageUrl}
-                                                sx={{width: 75, height: 75, mr: 3}}
+                                                sx={{ width: 75, height: 75, mr: 3 }}
                                                 slotProps={{
                                                     img: {
                                                         style: {
