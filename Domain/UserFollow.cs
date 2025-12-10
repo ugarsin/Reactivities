@@ -8,10 +8,9 @@ namespace Domain
 {
     public class UserFollow
     {
-        public string Id { get; set; } = Guid.NewGuid().ToString();
-        public string FollowingId { get; set; } = Guid.NewGuid().ToString();
-        public User Following { get; set; } = new User();
-        public string FollowerId { get; set; } = Guid.NewGuid().ToString();
-        public User Follower { get; set; }= new User();
+        public string FollowingId { get; set; }
+        public User Following { get; set; }
+        public string FollowerId { get; set; }
+        public User Follower { get; set; }
     }
 }

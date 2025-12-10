@@ -15,7 +15,7 @@ namespace Domain
         public string RefreshToken { get; set; } = "";
         public ICollection<ActivityAttendee> Activities { get; set; } = [];
         public ICollection<Photo> Photos { get; set; } = [];
-        public ICollection<UserFollow> Followings { get; set; } = new List<UserFollow>();
-        public ICollection<UserFollow> Followers { get; set; } = new List<UserFollow>();
+        public ICollection<UserFollow> Followings { get; set; } = [];
+        public ICollection<UserFollow> Followers { get; set; } = [];
     }
 }

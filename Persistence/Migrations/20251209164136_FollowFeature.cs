@@ -15,8 +15,7 @@ namespace Persistence.Migrations
                 columns: table => new
                 {
                     FollowingId = table.Column<string>(type: "TEXT", nullable: false),
-                    FollowerId = table.Column<string>(type: "TEXT", nullable: false),
-                    Id = table.Column<string>(type: "TEXT", nullable: true)
+                    FollowerId = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {

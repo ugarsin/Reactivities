@@ -11,7 +11,7 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251209134515_FollowFeature")]
+    [Migration("20251209164136_FollowFeature")]
     partial class FollowFeature
     {
         /// <inheritdoc />
@@ -224,9 +224,6 @@ namespace Persistence.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FollowerId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Id")
                         .HasColumnType("TEXT");
 
                     b.HasKey("FollowingId", "FollowerId");

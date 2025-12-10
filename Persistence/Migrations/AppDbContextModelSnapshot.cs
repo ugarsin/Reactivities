@@ -223,9 +223,6 @@ namespace Persistence.Migrations
                     b.Property<string>("FollowerId")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Id")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("FollowingId", "FollowerId");
 
                     b.HasIndex("FollowerId");
