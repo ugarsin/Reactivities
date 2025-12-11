@@ -9,12 +9,12 @@ export default function ActivityDetailsSidebar({ activity }: Props) {
     const following = true;
     return (
         <>
-            <Paper sx={{ display: "flex", direction: "column", gap: 3, borderRadius: 3 }}>
-                <Typography variant="h6">
+            <Paper sx={{ display: "flex", alignItems: "middle", direction: "column", height: 48, p: 0, backgroundColor: "primary.main" }}>
+                <Typography variant="h4" color="white" marginLeft={2}>
                     {activity.attendees.length} people going
                 </Typography>
             </Paper>
-            <Paper sx={{ padding: 2 }}>
+            <Paper sx={{ padding: 2, }}>
                 {
                     activity.attendees.map(attendee => (
                         <Grid2 container alignItems="center" key={attendee.id}>

@@ -27,6 +27,9 @@ type Profile = {
   displayName: string;
   bio?: string;
   imageUrl?: string;
+  follows: boolean;
+  followingsCount: number;
+  followersCount: number;
 }
 
 export type Photo = {
@@ -40,6 +43,9 @@ type User = {
   email: string;
   displayName: string;
   imageUrl?: string;
+  follows: boolean;
+  followingsCount: number;
+  followersCount: number;
 }
 
 type ChatComment = {
@@ -83,4 +89,4 @@ export type LocationIQAddress = {
   neighbourhood?: string;
 }
 
-export type ActivityCreate = Omit<"id" | "isCancelled">;
+export type ActivityCreate = Omit<Activity, "id" | "isCancelled">;

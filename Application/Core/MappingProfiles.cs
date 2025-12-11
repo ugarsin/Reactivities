@@ -9,7 +9,7 @@ namespace Application.Core
     {
         public MappingProfiles()
         {
-            //string? currentUserId = null;
+            string? currentUserId = null;
             CreateMap<Domain.Activity, Domain.Activity>();
             CreateMap<CreateActivityDto, Domain.Activity>();
             CreateMap<EditActivityDto, Domain.Activity>();
@@ -19,27 +19,37 @@ namespace Application.Core
                 )
                 .ForMember(d => d.HostId, o => o.MapFrom(
                     s => s.Attendees.FirstOrDefault(x => x.IsHost)!.User.Id)
-                );
+                )
+                .ForMember(d => d.Attendees, o => o.MapFrom(s => s.Attendees))
+            ;
             CreateMap<ActivityAttendee, UserProfile>()
                 .ForMember(d => d.DisplayName, o => o.MapFrom(s => s.User.DisplayName))
                 .ForMember(d => d.Bio, o => o.MapFrom(s => s.User.Bio))
                 .ForMember(d => d.ImageUrl, o => o.MapFrom(s => s.User.ImageUrl))
                 .ForMember(d => d.Id, o => o.MapFrom(s => s.User.Id))
                 .ForMember(d => d.FollowersCount, o => o.MapFrom(s => s.User.Followers.Count))
-                .ForMember(d => d.FollowingsCount, o => o.MapFrom(s => s.User.Followings.Count));
+                .ForMember(d => d.FollowingsCount, o => o.MapFrom(s => s.User.Followings.Count))
+                //.ForMember(d => d.Following,
+                //    o => o.MapFrom((src, dest, _, ctx) =>
+                //        src.Followers.Any(f =>
+                //           f.FollowerId == (string)ctx.Items["currentUserId"])))
+                ;
             CreateMap<User, UserProfile>();
             CreateMap<Comment, CommentDto>()
                 .ForMember(d => d.DisplayName, o => o.MapFrom(s => s.User.DisplayName))
                 .ForMember(d => d.UserId, o => o.MapFrom(s => s.User.Id))
-                .ForMember(d => d.ImageUrl, o => o.MapFrom(s => s.User.ImageUrl));
+                .ForMember(d => d.ImageUrl, o => o.MapFrom(s => s.User.ImageUrl))
+                .ForMember(d => d.CreatedAt, o => o.MapFrom(s => s.CreatedAt))
+                ;
             CreateMap<User, UserProfile>()
                 .ForMember(d => d.FollowersCount, o => o.MapFrom(s => s.Followers.Count))
                 .ForMember(d => d.FollowingsCount, o => o.MapFrom(s => s.Followings.Count))
                 .ForMember(d => d.Following,
-                    o => o.MapFrom((src, dest, _, ctx) =>
-                        src.Followers.Any(f =>
-                           f.FollowerId == (string)ctx.Items["currentUserId"])));
-                    //o => o.MapFrom(x => x.Followers.Any(f => f.FollowerId == currentUserId ))); 
+                    //o => o.MapFrom((src, dest, _, ctx) =>
+                    //    src.Followers.Any(f =>
+                    //       f.FollowerId == (string)ctx.Items["currentUserId"])))
+                    o => o.MapFrom(x => x.Followers.Any(f => f.FollowerId == currentUserId)))
+                ;
         }
     }
 }

@@ -15,13 +15,6 @@ export default function ActivityCard({ activity }: Props) {
   const color = activity.isHost ? "secondary" : activity.isGoing ? "warning" : "default";
 
   return (
-    // <Card
-    //   sx={{
-    //     borderRadius: 3,
-    //     width: "100%",
-    //     boxSizing: "border-box"
-    //   }}
-    // >
     <Card component={Paper} sx={{ position: 'relative', mb: 2, backgroundColor: 'white', overflow: 'hidden', width: "100%" }}>
       <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1 }}>
         {activity.isCancelled && (
@@ -83,9 +76,12 @@ export default function ActivityCard({ activity }: Props) {
         <Divider></Divider>
         <Box display="flex" gap={2} sx={{ backgroundColor: "grey.200", py: 3, pl: 2 }}>
           {activity.attendees.map(att => (
+            <>
+            {console.log(att)}
             <AvatarPopover
               profile={att} key={att.id}
-            ></AvatarPopover>
+              />
+            </>
           ))}
         </Box>
       </CardContent>

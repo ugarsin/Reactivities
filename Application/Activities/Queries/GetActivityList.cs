@@ -1,5 +1,6 @@
 ﻿using Application.Activities.DTOs;
 using Application.Core;
+using Application.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
@@ -29,7 +30,7 @@ public class GetActivityList
         }
     }
 
-    public class Handler(AppDbContext context, IMapper mapper)
+    public class Handler(AppDbContext context, IMapper mapper, IUserAccessor userAccessor)
         : IRequestHandler<Query, Result<PagedList<ActivityDto, DateTime?>>>
     {
         public async Task<Result<PagedList<ActivityDto, DateTime?>>> Handle(Query request, CancellationToken cancellationToken)
@@ -43,7 +44,10 @@ public class GetActivityList
 
             var activities = await query
                 .Take(request.PageSize + 1)
-                .ProjectTo<ActivityDto>(mapper.ConfigurationProvider)
+                .ProjectTo<ActivityDto>(
+                    mapper.ConfigurationProvider, 
+                    new { currentUserId = userAccessor.GetUserId() }
+                )
                 .ToListAsync(cancellationToken);
 
             DateTime? nextCursor = null;

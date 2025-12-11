@@ -37,28 +37,18 @@ export default function ActivityList({ activities }: Props) {
     activitiesGroup?.pages.flatMap(page => page.items) ?? [];
 
   return (
-    // <Box 
-    //   sx={{ 
-    //     display: "flex", 
-    //     flexDirection: "column", 
-    //     gap: 3 
-    //   }}
-    // >
     <>
       {items.map((activity, index) => (
-        // <Card sx={{position: "relative", background: "blue"}}>
-        // </Card>
           <Box
             id={activity.id} 
             key={index}
             ref={index === items.length - 1 ? ref : null}
             display="flex"
             alignSelf="flex-start"
-            // sx={{background: "blue"}}
           >
             <ActivityCard activity={activity} />
           </Box>
       ))}
-      </>
+    </>
   );
 }

@@ -8,8 +8,6 @@ type Props = {
 export default function ProfileHeader(
   { profile }: Props
 ) {
-  const isFollowing = true;
-
   return (
     <Paper
       elevation={3}
@@ -43,7 +41,7 @@ export default function ProfileHeader(
                 {profile?.displayName}
               </Typography>
               {
-                isFollowing
+                profile.follows
                 &&
                 <Chip
                   variant="outlined"
@@ -75,7 +73,7 @@ export default function ProfileHeader(
                 >Followers</Typography>
                 <Typography
                   variant="h3"
-                >5</Typography>
+                >{profile.followersCount}</Typography>
               </Box>
               <Box
                 textAlign="center"
@@ -85,7 +83,7 @@ export default function ProfileHeader(
                 >Following</Typography>
                 <Typography
                   variant="h3"
-                >5</Typography>
+                >{profile.followingsCount}</Typography>
               </Box>
             </Box>
             <Divider
@@ -94,9 +92,9 @@ export default function ProfileHeader(
             <Button
               fullWidth
               variant="outlined"
-              color={isFollowing ? "error" : "success"}
+              color={profile.follows ? "error" : "success"}
             >
-              {isFollowing ? "Unfollow" : "Follow"}
+              {profile.follows ? "Unfollow" : "Follow"}
             </Button>
           </Stack>
         </Grid>

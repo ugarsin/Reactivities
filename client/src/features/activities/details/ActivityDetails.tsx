@@ -26,7 +26,14 @@ export default function ActivityDetails() {
         <ActivityDetailsInfo activity={activity}></ActivityDetailsInfo>
         <ActivityDetailsChat></ActivityDetailsChat>
       </Grid>
-      <Grid size={4}>
+      <Grid 
+        size={4}           
+        sx={{
+          position: "sticky",
+          top: 14 * 8,
+          alignSelf: "flex-start",
+        }}
+      >
         <ActivityDetailsSidebar activity={activity}></ActivityDetailsSidebar>
       </Grid>
     </Grid>

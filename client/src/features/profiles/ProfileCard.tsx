@@ -64,11 +64,12 @@ export default function ProfileCard({ profile }: Props) {
           </Box>
         </CardContent>
         <Divider></Divider>
+        <Typography variant="h6">{profile.displayName}</Typography>
         <Box
           sx={{ display: "flex", alignItems: "center", justifyContent: "start" }}
         >
           <Person></Person>
-          <Typography sx={{ ml: 1 }}>20 Followers</Typography>
+          <Typography sx={{ ml: 1 }}>{profile.followersCount} Followers</Typography>
         </Box>
       </Card>
     </Link>

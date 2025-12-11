@@ -11,7 +11,6 @@ type Props = {
 
 export default function ActivityDetailsHeader({activity}: Props) {
     const { updateAttendance } = useActivities();
-    // const loading = false;
 
     return (
         <Card sx={{ position: 'relative', mb: 2, backgroundColor: 'transparent', overflow: 'hidden' }}>
