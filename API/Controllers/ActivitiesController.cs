@@ -12,9 +12,9 @@ public class ActivitiesController : BaseApiController
 {
     [HttpGet]
     [Authorize]
-    public async Task<ActionResult<PagedList<ActivityDto, DateTime?>>> GetActivities(DateTime? cursor)
+    public async Task<ActionResult<PagedList<ActivityDto, DateTime?>>> GetActivities([FromQuery]ActivityParams activityParams)
     {
-        return HandleResult(await Mediator.Send(new GetActivityList.Query { Cursor = cursor }));
+        return HandleResult(await Mediator.Send(new GetActivityList.Query { Params = activityParams }));
     }
 
     [HttpGet("{id}")]

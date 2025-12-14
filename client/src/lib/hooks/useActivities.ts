@@ -1,40 +1,46 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { Activity, ActivityCreate, PagedList } from "../types";
 import agent from "../api/agent";
-import { useLocation } from "react-router";
 import { useAccount } from "./useAccount";
+import { useStore } from "./useStore";
 
 export const useActivities = (id?: string) => {
   const queryClient = useQueryClient();
-  const location = useLocation();
   const { currentUser } = useAccount();
-
-  const { 
-    data: activitiesGroup, 
-    isLoading, 
-    isPending, 
-    isFetchingNextPage, 
-    fetchNextPage, 
-    hasNextPage 
+  const { activityStore: { filter, startDate } } = useStore();
+  
+  const startDateKey = startDate ? startDate.toISOString() : null;
+  const filterKey = String(filter); // or filter ?? "all"
+  const {
+    data: activitiesGroup,
+    isLoading,
+    isPending,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage
   } = useInfiniteQuery<PagedList<Activity, string>>({
-    queryKey: ["activities"],
+    refetchOnWindowFocus: false,
+    queryKey: ["activities", filterKey, startDateKey],
     queryFn: async ({ pageParam = null }) => {
       const response = await agent.get<PagedList<Activity, string>>("/activities", {
         params: {
           cursor: pageParam,
-          pageSize: 3
+          pageSize: 3,
+          filter: filterKey,
+          startDate: startDateKey
         }
       });
       return response.data;
     },
     initialPageParam: null,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
-    enabled:
-      !id
-      &&
-      location.pathname.startsWith("/activities")
-      &&
-      !!currentUser,
+    enabled: !id && !!currentUser,
+    // enabled:
+    //   !id
+    //   &&
+    //   location.pathname.startsWith("/activities")
+    //   &&
+    //   !!currentUser,
     select:
       data => ({
         ...data,

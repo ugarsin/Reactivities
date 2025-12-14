@@ -2,8 +2,9 @@ import { Grid } from '@mui/material';
 import ActivityList from './ActivityList';
 import ActivityFilters from './ActivityFilters';
 import { useActivities } from '../../../lib/hooks/useActivities';
+import { observer } from 'mobx-react-lite';
 
-export default function ActivityDashboard() {
+const ActivityDashboard = observer(function ActivityDashboard() {
   const {
     activitiesGroup,
     fetchNextPage,
@@ -37,4 +38,6 @@ export default function ActivityDashboard() {
       </Grid>
     </>
   );
-}
+});
+
+export default ActivityDashboard;

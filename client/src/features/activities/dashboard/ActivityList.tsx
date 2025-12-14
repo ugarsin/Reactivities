@@ -4,6 +4,7 @@ import type { Activity } from "../../../lib/types";
 import type { InfiniteData, InfiniteQueryObserverResult } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
 import { useEffect } from "react";
+import { observer } from "mobx-react-lite";
 
 type Props = {
   activities: {
@@ -14,7 +15,7 @@ type Props = {
   }
 };
 
-export default function ActivityList({ activities }: Props) {
+const ActivityList = observer(function ActivityList({ activities }: Props) {
   const { 
     activitiesGroup, 
     fetchNextPage, 
@@ -41,7 +42,7 @@ export default function ActivityList({ activities }: Props) {
       {items.map((activity, index) => (
           <Box
             id={activity.id} 
-            key={index}
+            key={activity.id}
             ref={index === items.length - 1 ? ref : null}
             display="flex"
             alignSelf="flex-start"
@@ -51,4 +52,6 @@ export default function ActivityList({ activities }: Props) {
       ))}
     </>
   );
-}
+});
+
+export default ActivityList;

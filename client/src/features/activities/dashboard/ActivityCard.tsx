@@ -76,12 +76,9 @@ export default function ActivityCard({ activity }: Props) {
         <Divider></Divider>
         <Box display="flex" gap={2} sx={{ backgroundColor: "grey.200", py: 3, pl: 2 }}>
           {activity.attendees.map(att => (
-            <>
-            {console.log(att)}
             <AvatarPopover
               profile={att} key={att.id}
               />
-            </>
           ))}
         </Box>
       </CardContent>
