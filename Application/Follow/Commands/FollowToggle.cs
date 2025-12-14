@@ -33,7 +33,7 @@ namespace Application.Follow.Commands
                     .FirstOrDefaultAsync(x => x.Id == request.Id);
                 if (target == null) throw new Exception("Target user not found");
                 var following = await context.UsersFollows
-                    .FindAsync(follower?.Id, target.Id);
+                    .FindAsync(target.Id, follower?.Id);
                 if (following == null)
                 {
                     following = new UserFollow

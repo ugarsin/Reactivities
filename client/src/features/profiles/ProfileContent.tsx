@@ -2,6 +2,7 @@ import { Box, Paper, Tab, Tabs } from "@mui/material";
 import { useState, type SyntheticEvent } from "react";
 import ProfilePhotos from "./ProfilePhotos";
 import ProfileAbout from "./ProfileAbout";
+import ProfileActivities from "./ProfileActivities";
 
 export default function ProfileContent() {
   const handlePhotoUploaded = () => {
@@ -11,7 +12,7 @@ export default function ProfileContent() {
   const tabContent = [
     { label: "About", content: <ProfileAbout></ProfileAbout> },
     { label: "Photos", content: <ProfilePhotos onPhotoUploaded={handlePhotoUploaded} /> },
-    { label: "Events", content: <div>Events</div> },
+    { label: "Events", content: < ProfileActivities /> },
     { label: "Followers", content: <div>Followers</div> },
     { label: "Following", content: <div>Following</div> }
   ]

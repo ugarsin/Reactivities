@@ -12,6 +12,12 @@ namespace API.Controllers
             return HandleResult(await Mediator.Send(new FollowToggle.Command { Id = id }));
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> UnFollow(string id)
+        {
+            return HandleResult(await Mediator.Send(new FollowToggle.Command { Id = id }));
+        }
+
         [HttpGet("{id}/{predicate}")]
         public async Task<IActionResult> GetFollowings(string id, string predicate)
         {

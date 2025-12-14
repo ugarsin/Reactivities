@@ -1,26 +1,54 @@
 import { Box, Button, Divider, Typography } from "@mui/material";
 import { useProfile } from "../../lib/hooks/useProfile";
 import { useParams } from "react-router";
+import ProfileEdit from "./ProfileEditForm";
+import { useState } from "react";
 
 export default function ProfileAbout() {
   const { id } = useParams();
-  const { profile } = useProfile(id);
-
+  const { profile, isCurrentUser } = useProfile(id);
+  const [editMode, setEditMode] = useState(false);
+  
   return (
     <Box>
-      <Box
-        display="flex"
-        justifyContent="space-between"
-      >
+      <Box display='flex' justifyContent='space-between'>
         <Typography variant="h5">About {profile?.displayName}</Typography>
-        <Button variant="contained">Edit profile</Button>
+        {isCurrentUser &&
+          <Button onClick={() => setEditMode(!editMode)}>
+            Edit profile
+          </Button>}
       </Box>
-      <Divider sx={{my: 2}}></Divider>
-      <Box sx={{overflow: "auto", maxHeight: 350}}>
-        <Typography variant="body1" sx={{whiteSpace: "pre-wrap"}}>
-          {profile?.bio || "No description added yet"}
+      <Divider sx={{ my: 2 }} />
+      <Box sx={{ overflow: 'auto', maxHeight: 350 }}>
+        <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
+          {profile?.bio || 'No description added yet'}
         </Typography>
+        {editMode && (
+          <ProfileEdit setEditMode={setEditMode} />
+        )}
       </Box>
     </Box>
   )
 }
+// export default function ProfileAbout() {
+//   const { id } = useParams();
+//   const { profile } = useProfile(id);
+
+//   return (
+//     <Box>
+//       <Box
+//         display="flex"
+//         justifyContent="space-between"
+//       >
+//         <Typography variant="h5">About {profile?.displayName}</Typography>
+//         <Button variant="contained">Edit profile</Button>
+//       </Box>
+//       <Divider sx={{my: 2}}></Divider>
+//       <Box sx={{overflow: "auto", maxHeight: 350}}>
+//         <Typography variant="body1" sx={{whiteSpace: "pre-wrap"}}>
+//           {profile?.bio || "No description added yet"}
+//         </Typography>
+//       </Box>
+//     </Box>
+//   )
+// }

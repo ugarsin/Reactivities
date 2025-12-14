@@ -1,5 +1,6 @@
 import { Paper, Typography, List, ListItem, Chip, ListItemAvatar, Avatar, ListItemText, Grid as Grid2 } from "@mui/material";
 import type { Activity } from "../../../lib/types";
+import { useNavigate } from "react-router";
 
 type Props = {
     activity: Activity
@@ -7,6 +8,7 @@ type Props = {
 
 export default function ActivityDetailsSidebar({ activity }: Props) {
     const following = true;
+    const navigate = useNavigate();
     return (
         <>
             <Paper sx={{ display: "flex", alignItems: "middle", direction: "column", height: 48, p: 0, backgroundColor: "primary.main" }}>
@@ -24,9 +26,10 @@ export default function ActivityDetailsSidebar({ activity }: Props) {
                                         <ListItemAvatar>
                                             <Avatar
                                                 variant="rounded"
+                                                onClick={() => navigate(`/profiles/${attendee.id}`)}
                                                 alt={attendee.displayName}
                                                 src={attendee.imageUrl}
-                                                sx={{ width: 75, height: 75, mr: 3 }}
+                                                sx={{ width: 75, height: 75, mr: 3, cursor: "pointer" }}
                                                 slotProps={{
                                                     img: {
                                                         style: {

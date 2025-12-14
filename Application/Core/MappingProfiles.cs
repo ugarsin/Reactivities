@@ -34,7 +34,6 @@ namespace Application.Core
                 //        src.Followers.Any(f =>
                 //           f.FollowerId == (string)ctx.Items["currentUserId"])))
                 ;
-            CreateMap<User, UserProfile>();
             CreateMap<Comment, CommentDto>()
                 .ForMember(d => d.DisplayName, o => o.MapFrom(s => s.User.DisplayName))
                 .ForMember(d => d.UserId, o => o.MapFrom(s => s.User.Id))
@@ -50,6 +49,7 @@ namespace Application.Core
                     //       f.FollowerId == (string)ctx.Items["currentUserId"])))
                     o => o.MapFrom(x => x.Followers.Any(f => f.FollowerId == currentUserId)))
                 ;
+            CreateMap<Activity, UserActivityDto>();
         }
     }
 }

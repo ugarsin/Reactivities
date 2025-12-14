@@ -1,13 +1,18 @@
 import { Avatar, Box, Button, Chip, Divider, Grid, Paper, Stack, Typography } from "@mui/material";
 import type { Profile } from "../../lib/types";
+import { useAccount } from "../../lib/hooks/useAccount";
+import { useProfile } from "../../lib/hooks/useProfile";
 
 type Props = {
-  profile: Profile
+  profile: Profile;
 }
 
 export default function ProfileHeader(
   { profile }: Props
 ) {
+  const { currentUser } = useAccount();
+  const { updateFollow } = useProfile(profile.id);
+  const toggleFollow = (id: string) => { updateFollow.mutate(id) }
   return (
     <Paper
       elevation={3}
@@ -41,7 +46,7 @@ export default function ProfileHeader(
                 {profile?.displayName}
               </Typography>
               {
-                profile.follows
+                profile.following
                 &&
                 <Chip
                   variant="outlined"
@@ -89,13 +94,18 @@ export default function ProfileHeader(
             <Divider
               sx={{ width: "100%" }}
             ></Divider>
-            <Button
-              fullWidth
-              variant="outlined"
-              color={profile.follows ? "error" : "success"}
-            >
-              {profile.follows ? "Unfollow" : "Follow"}
-            </Button>
+            {
+              currentUser?.id != profile.id
+              &&             
+              <Button
+                fullWidth
+                variant="outlined"
+                color={profile.following ? "error" : "success"}
+                onClick={() => toggleFollow(profile.id)}
+              >
+                {profile.following ? "Unfollow" : "Follow"}
+              </Button>
+            }
           </Stack>
         </Grid>
       </Grid>

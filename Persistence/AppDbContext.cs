@@ -48,4 +48,5 @@ public class AppDbContext : IdentityDbContext<User>
     public DbSet<Photo> Photos{ get; set; }
     public DbSet<Comment> Comments { get; set; }
     public DbSet<UserFollow> UsersFollows { get; set; }
+    public IEnumerable<object> ActivityAttendees { get; set; }
 }
